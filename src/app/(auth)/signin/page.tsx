@@ -1,16 +1,15 @@
 'use client'
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { LockClosedIcon } from "@radix-ui/react-icons"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { signIn, useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
-export default function Login() {
+export default function Component() {
   const session = useSession();
   const router = useRouter();
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -44,62 +43,61 @@ export default function Login() {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="py-10.5 py-4 lg:py-16 grid place-items-center">
-        <div className="flex flex-col items-center space-y-3">
-          <div className="text-3xl font-bold">Inversio</div>
-          <p className="text-gray-500 dark:text-gray-400">
-            Acesse a conta
-          </p>
-          <Avatar>
-            <AvatarFallback className="bg-primary">
-              <LockClosedIcon className="text-slate-50 h-6 w-6" />
-            </AvatarFallback>
-          </Avatar>
+    <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-4">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Inversio</h1>
+        <p className="mt-2 text-lg">Acesse sua conta</p>
+      </div>
+      <div className="mt-8">
+        <Avatar>
+          <AvatarFallback className="bg-inherit">
+            <LockClosedIcon className="text-primary h-6 w-6" />
+          </AvatarFallback>
+        </Avatar>
+      </div>
+      <form className="mt-6 w-full max-w-xs" onSubmit={handleSubmit(handleFormData)}>
+        <div className="flex flex-col space-y-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+            Email
+            <Input
+              className="mt-1"
+              id="email"
+              placeholder="m@email.com"
+              type="email"
+              {...register('email')}
+            />
+          </label>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="password">
+            Senha
+            <Input
+              className="mt-1"
+              id="password"
+              type="password"
+              {...register('password')}
+            />
+          </label>
+          <Button
+            type="submit"
+            className="mt-4 bg-blue-600 text-white"
+          >
+            Cadastrar
+          </Button>
         </div>
-      </header>
-      <main className="flex-1 flex flex-col justify-center">
-        <div className="mx-auto w-[350px] space-y-6">
-          <form className="space-y-4" onSubmit={handleSubmit(handleFormData)}>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                placeholder="m@example.com"
-                required
-                type="email"
-                {...register('email')}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                required
-                type="password"
-                {...register('password')}
-              />
-            </div>
-            <Button className="w-full">Entrar</Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            <Link className="underline" href="#">
-              Esqueceu a senha?
-            </Link>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            <Link className="underline" href="/signup">
-              Não tem conta? Cadastre-se
-            </Link>
-          </div>
-        </div>
-      </main>
-      <footer className="max-w-3xl mx-auto pb-10 grid place-items-center">
-        <div className="flex flex-col gap-1 text-center text-sm">
-          <p className="text-gray-500 dark:text-gray-400">© 2024 Inversio Ltda. Todos direitos reservados.</p>
-        </div>
+      </form>
+      <div className="mt-4 text-center text-sm">
+        <Link className="underline" href="#">
+          Esqueceu a senha?
+        </Link>
+      </div>
+      <div className="mt-4 flex flex-col items-center">
+        <Link className="text-sm text-blue-600 hover:underline" href="/signup">
+          Não tem conta? Cadastre-se
+        </Link>
+      </div>
+      <footer className="absolute bottom-4 text-center text-xs text-gray-500">
+        © 2024 Inversio Ltda. Todos direitos reservados.
       </footer>
     </div>
   )

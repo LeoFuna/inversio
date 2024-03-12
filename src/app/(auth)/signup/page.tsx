@@ -13,7 +13,7 @@ export default function Component() {
       </div>
       <div className="mt-8">
         <Avatar>
-          <AvatarFallback className="bg-white">
+          <AvatarFallback className="bg-inherit">
             <PersonIcon className="text-primary h-6 w-6" />
           </AvatarFallback>
         </Avatar>
