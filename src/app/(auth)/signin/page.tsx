@@ -90,7 +90,7 @@ export default function Login() {
             </Link>
           </div>
           <div className="mt-4 text-center text-sm">
-            <Link className="underline" href="#">
+            <Link className="underline" href="/signup">
               Não tem conta? Cadastre-se
             </Link>
           </div>
