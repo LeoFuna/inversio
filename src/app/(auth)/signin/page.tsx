@@ -1,48 +1,52 @@
 'use client'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { LoadingSpinner } from "@/components/ui/spinner"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import Link from "next/link"
 import { LockClosedIcon } from "@radix-ui/react-icons"
-import { signIn, useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
+import { useMutation } from "@tanstack/react-query"
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
 
-export default function Component() {
-  const session = useSession();
+export default function Signin() {
+  const { toast } = useToast();
   const router = useRouter();
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: '',
       password: '',
     }
   });
-
-  if (session.status === 'authenticated') router.push('/');
-
-  const handleFormData = async (formData: any) => {
-    setIsSubmitting(true);
-    try {
-      const result = await signIn('credentials', {
+  const mutation = useMutation({
+    mutationFn: async (formData: any) => {
+      // Simulate a slow network request
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
         callbackUrl: '/',
         redirect: false,
-      });
-  
-      if (result?.error) {
-        setLoginError('Email ou senha inválidos! Favor confirmar dados');
-        return
+      })
+      if (response?.error) {
+        throw new Error('Email ou senha inválidos! Favor confirmar dados')
       }
-    } catch (error: any) {
-      setLoginError(error.message);
-    } finally {
-      setIsSubmitting(false);
+      router.push('/')
+      return response
     }
-  };
+  })
+
+  if (mutation.isError) {
+    toast({
+      description: 'Email ou senha inválidos! Favor confirmar dados',
+      variant: 'destructive',
+      className: 'font-bold',
+      duration: 3000
+    })
+    mutation.reset()
+  }
   
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-4">
@@ -57,7 +61,7 @@ export default function Component() {
           </AvatarFallback>
         </Avatar>
       </div>
-      <form className="mt-6 w-full max-w-xs" onSubmit={handleSubmit(handleFormData)}>
+      <form className="mt-6 w-full max-w-xs" onSubmit={handleSubmit((formData: any) => mutation.mutate(formData))}>
         <div className="flex flex-col space-y-4">
           <label className="block text-sm font-medium text-gray-700" htmlFor="email">
             Email
@@ -82,7 +86,7 @@ export default function Component() {
             type="submit"
             className="mt-4 bg-blue-600 text-white"
           >
-            Cadastrar
+            { mutation.isPending ? <LoadingSpinner size={24} className="text-white" /> : 'Entrar' }
           </Button>
         </div>
       </form>
