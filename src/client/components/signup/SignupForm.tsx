@@ -14,7 +14,8 @@ export default function SignupForm() {
   const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      username: '',
+      name: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: ''
@@ -23,14 +24,21 @@ export default function SignupForm() {
 
   const mutation = useMutation({
     mutationFn: async (formData: any) => {
-      // Simulate a slow network request
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      const response: any = 'after creating user, redirect to signin page'
-      if (response?.error) {
-        throw new Error('Email ou senha inválidos! Favor confirmar dados')
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error('Senhas devem ser idênticas')
       }
-      router.push('/signin')
-      return response
+      const { confirmPassword, ...rest } = formData;
+      const createResponse = await fetch('/api/user', {
+        method: 'POST',
+        body: JSON.stringify(rest)
+      })
+        .then(data => ({ status: data.status, body: data.json() }));
+
+      if (createResponse.status !== 201) {
+        throw new Error(await createResponse.body)
+      }
+
+      return createResponse
     }
   })
 
@@ -40,20 +48,39 @@ export default function SignupForm() {
       variant: 'destructive',
       className: 'font-bold',
       duration: 3000
-    })
-    mutation.reset()
+    });
+    mutation.reset();
+  }
+  if (mutation.isSuccess) {
+    toast({
+      description: 'Cadastro criado com sucesso!!',
+      className: 'font-bold bg-primary text-white',
+      duration: 3000
+    });
+    mutation.reset();
+    setTimeout(() => router.push('/signin'), 1500)
   }
 
   return (
     <Form onSubmit={handleSubmit((formData) => mutation.mutate(formData))}>
       <div className="flex flex-col space-y-4">
-        <FormLabel htmlFor="username">
-          Nome de usuário
+        <FormLabel htmlFor="name">
+          Nome
           <Input
             className="mt-1"
-            id="username"
-            { ...register('username') }
-            placeholder="Seu nome de usuário"
+            id="name"
+            { ...register('name') }
+            placeholder="Seu primeiro nome"
+            type="text"
+          />
+        </FormLabel>
+        <FormLabel htmlFor="lastName">
+          Sobrenome
+          <Input
+            className="mt-1"
+            id="lastName"
+            { ...register('lastName') }
+            placeholder="Seu nome sobrenome"
             type="text"
           />
         </FormLabel>
