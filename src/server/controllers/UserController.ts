@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { IUserController } from "../interfaces/user/IUserController";
-import { IUserService } from "../interfaces/user/IUserService";
-import { IUser } from "../domains/User";
-import { z } from "zod";
-import { signinSchema } from "@/schemas/user-schemas";
+import { signinSchema } from '@/schemas/user-schemas';
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { IUser } from '../domains/User';
+import { IUserController } from '../interfaces/user/IUserController';
+import { IUserService } from '../interfaces/user/IUserService';
 
 export class UserController implements IUserController {
   constructor(private readonly userService: IUserService) {}
@@ -12,13 +12,16 @@ export class UserController implements IUserController {
     const body: z.infer<typeof signinSchema> = await req.json();
     if (!body.email.length || !body.password.length) {
       return NextResponse.json(
-        { message: "Invalid Credentials" },
+        { message: 'Invalid Credentials' },
         { status: 401 }
       );
     }
 
     try {
-      const checkResponse = await this.userService.checkUserCredentials(body.email, body.password);
+      const checkResponse = await this.userService.checkUserCredentials(
+        body.email,
+        body.password
+      );
 
       if ('error' in checkResponse) {
         return NextResponse.json(
@@ -26,16 +29,13 @@ export class UserController implements IUserController {
           { status: checkResponse.status }
         );
       }
-      return NextResponse.json(
-        { email: checkResponse.email },
-        { status: 200 }
-      );
+      return NextResponse.json({ email: checkResponse.email }, { status: 200 });
     } catch (e: any) {
       // TO DO: o erro aqui seria mais o caso de erro inesperado, ou seja
       // qqr erro esperado, deve ser tratado!
       return NextResponse.json(null, { status: 500 });
     }
-  };
+  }
 
   async createUser(req: NextRequest) {
     try {
@@ -44,16 +44,12 @@ export class UserController implements IUserController {
       if ('error' in user) {
         return NextResponse.json(
           { message: user.error },
-          { status: user.status }  
-        )
+          { status: user.status }
+        );
       }
-      return NextResponse.json(
-        { email: user.email },
-        { status: 201 }
-      );
+      return NextResponse.json({ email: user.email }, { status: 201 });
     } catch (e: any) {
       return NextResponse.json(null, { status: 500 });
     }
-  };
-  
+  }
 }

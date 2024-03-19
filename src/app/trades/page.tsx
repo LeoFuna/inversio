@@ -1,12 +1,47 @@
-
 const MOCKED_TRADES = [
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-  { code: 'ITSA4', price: 10.00, quantity: 100, date: '10/10/2021', result: 1000.00 },
-]
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+  {
+    code: 'ITSA4',
+    price: 10.0,
+    quantity: 100,
+    date: '10/10/2021',
+    result: 1000.0,
+  },
+];
 
 export default function TradesPage() {
   return (

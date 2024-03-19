@@ -1,3 +1,7 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals", "airbnb", "airbnb/hooks"],
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
 }

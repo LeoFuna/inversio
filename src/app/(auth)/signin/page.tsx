@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import Link from "next/link"
-import { LockClosedIcon } from "@radix-ui/react-icons"
-import SigninForm from "@/client/components/signin/SigninForm"
+import SigninForm from '@/client/components/signin/SigninForm';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { LockClosedIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 
 export default function Signin() {
   return (
@@ -32,6 +32,5 @@ export default function Signin() {
         © 2024 Inversio Ltda. Todos direitos reservados.
       </footer>
     </div>
-  )
+  );
 }
-
