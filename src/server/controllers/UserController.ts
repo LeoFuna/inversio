@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { IUserController } from "../interfaces/user/IUserController";
 import { IUserService } from "../interfaces/user/IUserService";
 import { IUser } from "../domains/User";
+import { z } from "zod";
+import { signinSchema } from "@/schemas/user-schemas";
 
 export class UserController implements IUserController {
   constructor(private readonly userService: IUserService) {}
 
   async checkUserCredentials(req: NextRequest) {
-    const body: { password: string, email: string } = await req.json();
+    const body: z.infer<typeof signinSchema> = await req.json();
     if (!body.email.length || !body.password.length) {
       return NextResponse.json(
         { message: "Invalid Credentials" },
