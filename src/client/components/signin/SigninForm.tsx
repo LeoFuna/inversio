@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Form, FormLabel } from '../core/form'
+import { Form, FormLabel, FormMessage } from '../core/form'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
@@ -8,6 +8,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import ButtonWithLoading from '../core/buttonWithLoading';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signinSchema } from '@/schemas/user-schemas';
 
 
 export default function SigninForm() {
@@ -17,7 +19,8 @@ export default function SigninForm() {
     defaultValues: {
       email: '',
       password: '',
-    }
+    },
+    resolver: zodResolver(signinSchema)
   });
 
   const mutation = useMutation({
@@ -57,9 +60,9 @@ export default function SigninForm() {
             className="mt-1"
             id="email"
             placeholder="m@email.com"
-            type="email"
             {...register('email')}
           />
+          <FormMessage message={errors.email?.message} />
         </FormLabel>
         <FormLabel htmlFor='password'>
           {'Senha'}
@@ -69,6 +72,7 @@ export default function SigninForm() {
             type="password"
             {...register('password')}
           />
+          <FormMessage message={errors.password?.message} />
         </FormLabel>
         <ButtonWithLoading
           isLoading={mutation.isPending}

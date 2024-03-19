@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const passwordSchema = z.string().min(6, { message: 'Senha deve ter no mínimo 6 caracteres' });
+
 const signupSchema = z.object({
   name: z.string()
     .trim()
@@ -9,10 +11,8 @@ const signupSchema = z.object({
   email: z.string()
     .email({ message: 'Email inválido' })
     .min(1, { message: 'Email é obrigatório' }),
-  password: z.string()
-    .min(6, { message: 'Senha deve ter no mínimo 6 caracteres' }),
-  confirmPassword: z.string()
-    .min(6, { message: 'Senha deve ter no mínimo 6 caracteres' })
+  password: passwordSchema,
+  confirmPassword: passwordSchema
 }).superRefine(({ password, confirmPassword }, ctx) => {
   if (confirmPassword !== password) {
     ctx.addIssue({
@@ -23,6 +23,14 @@ const signupSchema = z.object({
   }
 });
 
+const signinSchema = z.object({
+  email: z.string()
+    .email({ message: 'Email inválido' })
+    .min(1, { message: 'Email é obrigatório' }),
+  password: passwordSchema,
+});
+
 export {
-  signupSchema
+  signupSchema,
+  signinSchema
 }
