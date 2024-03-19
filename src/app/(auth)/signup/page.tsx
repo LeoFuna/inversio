@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { PersonIcon } from "@radix-ui/react-icons"
-import SignupForm from "@/client/components/signup/SignupForm"
+import SignupForm from '@/client/components/signup/SignupForm';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PersonIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 
 export default function Component() {
   return (
@@ -27,6 +27,5 @@ export default function Component() {
         © 2024 Inversio Ltda. Todos direitos reservados.
       </footer>
     </div>
-  )
+  );
 }
-
