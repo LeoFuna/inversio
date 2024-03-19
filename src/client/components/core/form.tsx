@@ -29,3 +29,11 @@ export function FormLabel({ children, className, htmlFor }: FormLabelProps) {
     </label>
   )
 }
+
+export function FormMessage({ message }: { message?: string }) {
+  return (
+    <p className="mt-2 text-sm text-red-400">
+      { message }
+    </p>
+  )
+}

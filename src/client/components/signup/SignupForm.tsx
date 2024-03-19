@@ -1,12 +1,15 @@
 'use client'
 import React from 'react'
-import { Form, FormLabel } from '../core/form'
+import { Form, FormLabel, FormMessage } from '../core/form'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
 import ButtonWithLoading from '../core/buttonWithLoading';
+import { signupSchema } from '@/schemas/user-schemas';
+import { z } from 'zod';
 
 
 export default function SignupForm() {
@@ -19,14 +22,12 @@ export default function SignupForm() {
       email: '',
       password: '',
       confirmPassword: ''
-    }
+    },
+    resolver: zodResolver(signupSchema)
   });
 
   const mutation = useMutation({
-    mutationFn: async (formData: any) => {
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error('Senhas devem ser idênticas')
-      }
+    mutationFn: async (formData: z.infer<typeof signupSchema>) => {
       const { confirmPassword, ...rest } = formData;
       const createResponse = await fetch('/api/user', {
         method: 'POST',
@@ -73,6 +74,7 @@ export default function SignupForm() {
             placeholder="Seu primeiro nome"
             type="text"
           />
+          <FormMessage message={errors.name?.message} />
         </FormLabel>
         <FormLabel htmlFor="lastName">
           Sobrenome
@@ -93,6 +95,7 @@ export default function SignupForm() {
             placeholder="m@example.com"
             type="email"
           />
+          <FormMessage message={errors.email?.message} />
         </FormLabel>
         <FormLabel htmlFor="password">
           Senha
@@ -100,9 +103,10 @@ export default function SignupForm() {
             className="mt-1"
             id="password"
             { ...register('password') }
-            placeholder="********"
+            placeholder="******"
             type="password"
           />
+          <FormMessage message={errors.password?.message} />
         </FormLabel>
         <FormLabel htmlFor="confirm-password">
           Confirmar Senha
@@ -110,9 +114,10 @@ export default function SignupForm() {
             className="mt-1"
             id="confirm-password"
             { ...register('confirmPassword') }
-            placeholder="********"
+            placeholder="******"
             type="password"
           />
+          <FormMessage message={errors.confirmPassword?.message} />
         </FormLabel>
         <ButtonWithLoading
           isLoading={mutation.isPending}
