@@ -1,6 +1,6 @@
 import { IUser } from '@/server/domains/User';
 
-type SuccessCredentails = { email: string };
+type SuccessCredentails = { email: string; firstName: string };
 type ErrorCredentails = { status: number; error: string };
 
 export interface IUserService {

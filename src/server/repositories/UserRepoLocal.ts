@@ -34,7 +34,9 @@ export class UserRepoLocal implements IUserRepository {
   async getUserByEmail(email: string) {
     return new Promise(
       (
-        resolve: (value: { email: string; password: string } | null) => void,
+        resolve: (
+          value: { email: string; password: string; firstName: string } | null
+        ) => void,
         reject
       ) => {
         this.db.get(
@@ -53,7 +55,11 @@ export class UserRepoLocal implements IUserRepository {
               reject(err);
             } else {
               if (!row) return resolve(null);
-              const result = { email: row.email, password: row.password };
+              const result = {
+                email: row.email,
+                password: row.password,
+                firstName: row.name,
+              };
               resolve(result);
             }
           }

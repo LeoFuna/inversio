@@ -21,7 +21,11 @@ export const authOptions: NextAuthOptions = {
 
         if ('error' in userFound) return null;
 
-        return { id: userFound.email, email: userFound.email };
+        return {
+          id: userFound.email,
+          email: userFound.email,
+          name: userFound.firstName,
+        };
       },
     }),
   ],

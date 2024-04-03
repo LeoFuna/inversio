@@ -20,6 +20,6 @@ export class UserService implements IUserService {
     if (result.password !== password)
       return { status: 401, error: 'Invalid Credentials' };
 
-    return { email: result?.email };
+    return { email: result?.email, firstName: result?.firstName };
   }
 }
