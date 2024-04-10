@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import ButtonWithLoading from '../core/buttonWithLoading';
+import ButtonWithLoading from '../core/ButtonWithLoading';
 import { Form, FormLabel, FormMessage } from '../core/form';
 
 export default function SigninForm() {
@@ -76,7 +76,9 @@ export default function SigninForm() {
           />
           <FormMessage message={errors.password?.message} />
         </FormLabel>
-        <ButtonWithLoading isLoading={mutation.isPending} title="Entrar" />
+        <ButtonWithLoading isLoading={mutation.isPending}>
+          Entrar
+        </ButtonWithLoading>
       </div>
     </Form>
   );

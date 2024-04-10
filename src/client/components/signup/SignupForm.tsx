@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import ButtonWithLoading from '../core/buttonWithLoading';
+import ButtonWithLoading from '../core/ButtonWithLoading';
 import { Form, FormLabel, FormMessage } from '../core/form';
 
 export default function SignupForm() {
@@ -120,7 +120,9 @@ export default function SignupForm() {
           />
           <FormMessage message={errors.confirmPassword?.message} />
         </FormLabel>
-        <ButtonWithLoading isLoading={mutation.isPending} title="Cadastrar" />
+        <ButtonWithLoading isLoading={mutation.isPending}>
+          Cadastrar
+        </ButtonWithLoading>
       </div>
     </Form>
   );

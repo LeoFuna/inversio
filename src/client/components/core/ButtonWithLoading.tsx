@@ -18,17 +18,17 @@ export default function ButtonWithLoading({
   className,
   spinnerProps,
   isLoading,
-  title,
+  children,
 }: Props) {
   return (
-    <Button className={cn('mt-4', className)}>
+    <Button className={cn('', className)}>
       {isLoading ? (
         <LoadingSpinner
           size={spinnerProps?.size || 24}
           className={cn('text-white', spinnerProps?.className)}
         />
       ) : (
-        title
+        children
       )}
     </Button>
   );
