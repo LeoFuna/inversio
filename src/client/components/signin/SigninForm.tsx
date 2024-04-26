@@ -54,7 +54,10 @@ export default function SigninForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit((formData) => mutation.mutate(formData))}>
+    <Form
+      className="max-w-xs"
+      onSubmit={handleSubmit((formData) => mutation.mutate(formData))}
+    >
       <div className="flex flex-col space-y-4">
         <FormLabel htmlFor="email">
           {'Email'}

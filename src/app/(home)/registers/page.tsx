@@ -1,6 +1,6 @@
 'use client';
-import ButtonWithLoading from '@/client/components/core/ButtonWithLoading';
 import DebouncedInput from '@/client/components/core/DebouncedInput';
+import NewStrategyDialog from '@/client/components/registers/NewStrategyDialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -128,9 +128,9 @@ export default function RegistersPage() {
       <section className="bg-white p-4 rounded-md shadow mb-4">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold mb-4">Estratégias</h2>
-          <ButtonWithLoading className="mb-4">
-            Criar Estratégia
-          </ButtonWithLoading>
+          <NewStrategyDialog>
+            <Button className="mb-4">Criar Estratégia</Button>
+          </NewStrategyDialog>
         </div>
         <div className="mb-4 flex items-center gap-3">
           <Label htmlFor="search">Buscar</Label>
@@ -162,16 +162,22 @@ export default function RegistersPage() {
           <TableBody>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-                <TableCell>
+                {row.getVisibleCells().map((cell) => {
+                  if (!cell.column.columnDef.header?.length) return;
+                  return (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  );
+                })}
+                <TableCell className="flex justify-end gap-x-6">
                   <Button
                     variant="ghost"
                     onClick={() =>
-                      alert(`Vair abrir pop-up de confirmaçao! ${row.id}`)
+                      alert(`Vai abrir pop-up de confirmaçao! ${row.id}`)
                     }
                   >
                     <TrashIcon className="h-5 w-5 inline" />
@@ -180,7 +186,7 @@ export default function RegistersPage() {
                     variant="ghost"
                     onClick={() => alert(`Abre ediçao de Estratégia ${row.id}`)}
                   >
-                    <Pencil2Icon className="h-5 w-5 inline ml-3" />
+                    <Pencil2Icon className="h-5 w-5 inline" />
                   </Button>
                 </TableCell>
               </TableRow>

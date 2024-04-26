@@ -64,7 +64,10 @@ export default function SignupForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit((formData) => mutation.mutate(formData))}>
+    <Form
+      className="max-w-xs"
+      onSubmit={handleSubmit((formData) => mutation.mutate(formData))}
+    >
       <div className="flex flex-col space-y-4">
         <FormLabel htmlFor="name">
           Nome
