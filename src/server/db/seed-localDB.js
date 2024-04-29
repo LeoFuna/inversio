@@ -17,5 +17,9 @@ db.serialize(() => {
   db.run(
     'INSERT INTO trades (id, code, priceInCents, quantity, date, resultInCents) VALUES ("1", "PETR4", 300, 100, "2021-01-01", 310)'
   );
+
+  db.run(
+    'CREATE TABLE IF NOT EXISTS strategies (id TEXT UNIQUE, name TEXT, direction TEXT, description TEXT, userId TEXT)'
+  );
 });
 console.log('Seed completed!');
