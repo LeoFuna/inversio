@@ -16,7 +16,7 @@ export class StrategyController implements IStrategyController {
           { status: response.status }
         );
       }
-      return NextResponse.json(response);
+      return NextResponse.json(response, { status: 200 });
     } catch (error: any) {
       return NextResponse.json(null, { status: 500 });
     }
@@ -35,7 +35,7 @@ export class StrategyController implements IStrategyController {
           { status: response.status }
         );
       }
-      return NextResponse.json(response);
+      return NextResponse.json(response, { status: 201 });
     } catch (error: any) {
       return NextResponse.json(null, { status: 500 });
     }

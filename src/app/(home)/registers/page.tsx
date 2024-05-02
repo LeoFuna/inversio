@@ -11,8 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { IStrategy } from '@/server/domains/Strategy';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { rankItem } from '@tanstack/match-sorter-utils';
+import { useQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
   FilterFn,
@@ -23,50 +25,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
-
-type Strategy = {
-  name: string;
-  direction: 'Contra Tendencia' | 'Tendencia' | 'Indefinido';
-  description: string;
-};
-
-const defaultData: Strategy[] = [
-  {
-    name: 'Inversão',
-    direction: 'Contra Tendencia',
-    description: 'Inversão de Fluxo',
-  },
-  {
-    name: 'Front Running',
-    direction: 'Tendencia',
-    description: 'Front running em algoritmo persistente',
-  },
-  {
-    name: 'Abertura',
-    direction: 'Indefinido',
-    description: 'Abertura do dia',
-  },
-  {
-    name: 'Exaustão',
-    direction: 'Contra Tendencia',
-    description: 'Exaustão de Fluxo',
-  },
-  {
-    name: 'Pull back',
-    direction: 'Contra Tendencia',
-    description: 'Pull back na primeira batida',
-  },
-  {
-    name: 'Iceberg',
-    direction: 'Contra Tendencia',
-    description: 'Iceberg em algoritmo persistente',
-  },
-  {
-    name: 'Queda no vazio',
-    direction: 'Tendencia',
-    description: 'Mercado caindo no vazio',
-  },
-];
 
 // https://tanstack.com/table/latest/docs/api/features/global-filtering#filter-meta
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -81,11 +39,26 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 export default function RegistersPage() {
-  const [data, _setData] = useState(() => [...defaultData]);
+  const [data, setData] = useState<IStrategy[]>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
 
-  const columns = useMemo<ColumnDef<Strategy, any>[]>(
+  const strategiesQuery = useQuery({
+    queryKey: ['strategies'],
+    queryFn: async () => {
+      const strategiesResponse = await fetch('/api/strategy').then(
+        async (data) => ({ status: data.status, body: await data.json() })
+      );
+      setData(strategiesResponse.body);
+      if (strategiesResponse.status !== 200) {
+        throw new Error(await strategiesResponse.body);
+      }
+
+      return strategiesResponse;
+    },
+  });
+
+  const columns = useMemo<ColumnDef<IStrategy, any>[]>(
     () => [
       {
         header: 'Nome',
@@ -108,7 +81,6 @@ export default function RegistersPage() {
     ],
     []
   );
-
   const table = useReactTable({
     data,
     columns,
@@ -122,6 +94,11 @@ export default function RegistersPage() {
       globalFilter,
     },
   });
+
+  if (strategiesQuery.isPending) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <main className="flex-1 p-4">
       <h1 className="text-2xl font-semibold mb-4">Cadastros</h1>

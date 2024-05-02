@@ -15,7 +15,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { INewStrategy } from '@/server/domains/Strategy';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import ButtonWithLoading from '../core/ButtonWithLoading';
 import { Form, FormLabel } from '../core/form';
@@ -26,6 +28,26 @@ export default function NewStrategyDialog({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  // TO DO: fazer o formulário para gerenciar os estados do dialog
+
+  const mutation = useMutation({
+    mutationFn: async (formData: Omit<INewStrategy, 'userEmail'>) => {
+      const createResponse = await fetch('/api/strategy', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      }).then(async (data) => ({
+        status: data.status,
+        body: await data.json(),
+      }));
+
+      if (createResponse.status !== 201) {
+        throw new Error(await createResponse.body);
+      }
+
+      return createResponse;
+    },
+  });
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
