@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const newStrategySchema = z.object({
+const newStrategyFormSchema = z.object({
   name: z
     .string()
     .trim()
@@ -9,6 +9,10 @@ const newStrategySchema = z.object({
   description: z
     .string()
     .min(1, { message: 'Descrição da estratégia é obrigatória' }),
+});
+
+const newStrategySchema = z.object({
+  ...newStrategyFormSchema.shape,
   userEmail: z.string().email({ message: 'Email inválido' }),
 });
 
@@ -17,4 +21,4 @@ const strategySchema = z.object({
   ...newStrategySchema.shape,
 });
 
-export { newStrategySchema, strategySchema };
+export { newStrategyFormSchema, newStrategySchema, strategySchema };

@@ -105,7 +105,7 @@ export default function RegistersPage() {
       <section className="bg-white p-4 rounded-md shadow mb-4">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold mb-4">Estratégias</h2>
-          <NewStrategyDialog>
+          <NewStrategyDialog refetchStrategies={strategiesQuery.refetch}>
             <Button className="mb-4">Criar Estratégia</Button>
           </NewStrategyDialog>
         </div>

@@ -14,7 +14,15 @@ export class StrategyService implements IStrategyService {
       const response = await this.strategyRepository.getStrategies(
         session.user.email
       );
-      return response;
+
+      return response.map((strategy) => {
+        // TO DO: separar isso em funçao especifica
+        let displayDirection = '';
+        if (strategy.direction === 'ct') displayDirection = 'Contra Tendência';
+        if (strategy.direction === 'td') displayDirection = 'Tendência';
+        if (strategy.direction === 'neutro') displayDirection = 'Neutra';
+        return { ...strategy, direction: displayDirection };
+      });
     } catch (error: any) {
       return { status: 500, error: error.message };
     }
