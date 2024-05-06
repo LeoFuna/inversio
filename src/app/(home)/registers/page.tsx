@@ -14,7 +14,7 @@ import {
 import { IStrategy } from '@/server/domains/Strategy';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
   FilterFn,
@@ -58,6 +58,23 @@ export default function RegistersPage() {
     },
   });
 
+  const deleteRequest = useMutation({
+    mutationFn: async (id: string) => {
+      const deleteResponse = await fetch(`/api/strategy/${id}`, {
+        method: 'DELETE',
+      }).then(async (data) => ({
+        status: data.status,
+        body: await data.json(),
+      }));
+
+      if (deleteResponse.status !== 200) {
+        throw new Error(deleteResponse.body);
+      }
+
+      return deleteResponse;
+    },
+  });
+
   const columns = useMemo<ColumnDef<IStrategy, any>[]>(
     () => [
       {
@@ -88,6 +105,7 @@ export default function RegistersPage() {
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     getFilteredRowModel: getFilteredRowModel(),
+    getRowId: (row) => row.id,
     globalFilterFn: fuzzyFilter,
     state: {
       pagination,
@@ -97,6 +115,11 @@ export default function RegistersPage() {
 
   if (strategiesQuery.isPending) {
     return <p>Carregando...</p>;
+  }
+
+  if (deleteRequest.isSuccess) {
+    deleteRequest.reset();
+    strategiesQuery.refetch();
   }
 
   return (
@@ -153,8 +176,12 @@ export default function RegistersPage() {
                 <TableCell className="flex justify-end gap-x-6">
                   <Button
                     variant="ghost"
-                    onClick={() =>
-                      alert(`Vai abrir pop-up de confirmaçao! ${row.id}`)
+                    onClick={
+                      () => {
+                        deleteRequest.mutate(row.id);
+                      }
+                      // TO DO!!!
+                      // alert(`Vai abrir pop-up de confirmaçao! ${row.id}`)
                     }
                   >
                     <TrashIcon className="h-5 w-5 inline" />

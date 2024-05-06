@@ -8,4 +8,5 @@ export interface IStrategyService {
     strategy: Omit<INewStrategy, 'userEmail'>
   ): Promise<SuccessCreateStrategy | ErrorStrategy>;
   getStrategies(): Promise<IStrategy[] | ErrorStrategy>;
+  deleteStrategy(id: string): Promise<{ message: string } | ErrorStrategy>;
 }

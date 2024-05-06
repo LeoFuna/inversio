@@ -65,8 +65,7 @@ export default function NewStrategyDialog({
   const onCreateStrategy = async (
     formData: Omit<INewStrategy, 'userEmail'>
   ) => {
-    // TO DO: apesar de estar criando ainda nao temos um loading
-    // e feedback de sucesso ou erro
+    // TO DO: apesar de estar criando ainda nao temos um feedback de sucesso ou erro
     mutation.mutate(formData);
   };
 
@@ -132,7 +131,12 @@ export default function NewStrategyDialog({
             />
           </FormLabel>
           <DialogFooter>
-            <ButtonWithLoading className="min-w-24">Criar</ButtonWithLoading>
+            <ButtonWithLoading
+              isLoading={mutation.isPending}
+              className="min-w-24"
+            >
+              Criar
+            </ButtonWithLoading>
           </DialogFooter>
         </Form>
       </DialogContent>

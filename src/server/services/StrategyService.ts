@@ -5,6 +5,17 @@ import { IStrategyService } from '../interfaces/strategy/IStrategyService';
 
 export class StrategyService implements IStrategyService {
   constructor(private readonly strategyRepository: IStrategyRepository) {}
+  async deleteStrategy(
+    id: string
+  ): Promise<{ message: string } | { status: number; error: string }> {
+    try {
+      if (!id) return { status: 400, error: 'Id is required' };
+      await this.strategyRepository.deleteStrategy(id);
+      return { message: 'Success on delete!' };
+    } catch (error: any) {
+      return { status: 500, error: error.message };
+    }
+  }
   async getStrategies(): Promise<
     IStrategy[] | { status: number; error: string }
   > {

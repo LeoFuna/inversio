@@ -8,4 +8,8 @@ export interface IStrategyController {
   getStrategies(
     req: NextRequest
   ): Promise<NextResponse<IStrategy[] | { message: string } | null>>;
+  deleteStrategy(
+    req: NextRequest,
+    id: string
+  ): Promise<NextResponse<{ message: string } | null>>;
 }

@@ -5,6 +5,26 @@ import { IStrategyService } from '../interfaces/strategy/IStrategyService';
 
 export class StrategyController implements IStrategyController {
   constructor(private readonly strategyService: IStrategyService) {}
+  async deleteStrategy(
+    req: NextRequest,
+    id: string
+  ): Promise<NextResponse<{ message: string } | null>> {
+    if (!id?.length) {
+      return NextResponse.json({ message: 'Id is required' }, { status: 400 });
+    }
+    try {
+      const response = await this.strategyService.deleteStrategy(id);
+      if ('error' in response) {
+        return NextResponse.json(
+          { message: response.error },
+          { status: response.status }
+        );
+      }
+      return NextResponse.json(response, { status: 200 });
+    } catch (error: any) {
+      return NextResponse.json(null, { status: 500 });
+    }
+  }
   async getStrategies(
     _req: NextRequest
   ): Promise<NextResponse<IStrategy[] | { message: string } | null>> {
