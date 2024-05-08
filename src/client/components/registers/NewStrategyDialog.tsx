@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
 import { newStrategyFormSchema } from '@/schemas/strategy-schemas';
 import { INewStrategy } from '@/server/domains/Strategy';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,8 +35,14 @@ export default function NewStrategyDialog({
   refetchStrategies: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
-  const { register, handleSubmit, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset: formReset,
+  } = useForm({
     defaultValues: {
       name: '',
       direction: '',
@@ -46,6 +53,12 @@ export default function NewStrategyDialog({
 
   const mutation = useMutation({
     mutationFn: async (formData: Omit<INewStrategy, 'userEmail'>) => {
+      // Função que retorna uma promessa que resolve após 4 segundos
+      const wait = (ms: number) =>
+        new Promise((resolve, reject) => setTimeout(reject, ms));
+
+      // Faz o fetch após 4 segundos de espera
+      await wait(2500);
       const createResponse = await fetch('/api/strategy', {
         method: 'POST',
         body: JSON.stringify(formData),
@@ -65,14 +78,26 @@ export default function NewStrategyDialog({
   const onCreateStrategy = async (
     formData: Omit<INewStrategy, 'userEmail'>
   ) => {
-    // TO DO: apesar de estar criando ainda nao temos um feedback de sucesso ou erro
     mutation.mutate(formData);
+    formReset();
   };
 
   if (mutation.isSuccess) {
+    toast({
+      title: 'Criado com sucesso!',
+      variant: 'success',
+    });
     mutation.reset();
     refetchStrategies();
     setIsOpen(false);
+  }
+
+  if (mutation.isError) {
+    toast({
+      title: 'Ops...algo deu errado na criação',
+      variant: 'destructive',
+    });
+    mutation.reset();
   }
 
   return (
