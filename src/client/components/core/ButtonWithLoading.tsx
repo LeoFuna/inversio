@@ -18,10 +18,11 @@ export default function ButtonWithLoading({
   className,
   spinnerProps,
   isLoading,
+  disabled = false,
   children,
 }: Props) {
   return (
-    <Button className={cn('', className)}>
+    <Button className={cn('', className)} disabled={disabled}>
       {isLoading ? (
         <LoadingSpinner
           size={spinnerProps?.size || 24}

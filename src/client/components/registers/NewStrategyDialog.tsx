@@ -42,6 +42,7 @@ export default function NewStrategyDialog({
     handleSubmit,
     control,
     reset: formReset,
+    formState: { isValid },
   } = useForm({
     defaultValues: {
       name: '',
@@ -53,12 +54,6 @@ export default function NewStrategyDialog({
 
   const mutation = useMutation({
     mutationFn: async (formData: Omit<INewStrategy, 'userEmail'>) => {
-      // Função que retorna uma promessa que resolve após 4 segundos
-      const wait = (ms: number) =>
-        new Promise((resolve, reject) => setTimeout(reject, ms));
-
-      // Faz o fetch após 4 segundos de espera
-      await wait(2500);
       const createResponse = await fetch('/api/strategy', {
         method: 'POST',
         body: JSON.stringify(formData),
@@ -79,7 +74,6 @@ export default function NewStrategyDialog({
     formData: Omit<INewStrategy, 'userEmail'>
   ) => {
     mutation.mutate(formData);
-    formReset();
   };
 
   if (mutation.isSuccess) {
@@ -101,7 +95,13 @@ export default function NewStrategyDialog({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) formReset();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -159,6 +159,7 @@ export default function NewStrategyDialog({
             <ButtonWithLoading
               isLoading={mutation.isPending}
               className="min-w-24"
+              disabled={mutation.isPending || !isValid}
             >
               Criar
             </ButtonWithLoading>
