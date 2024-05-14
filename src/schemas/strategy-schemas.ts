@@ -6,9 +6,7 @@ const newStrategyFormSchema = z.object({
     .trim()
     .min(2, { message: 'Nome deve ter no min 2 characteres' }),
   direction: z.string().min(1, { message: 'Direção é obrigatória' }),
-  description: z
-    .string()
-    .min(1, { message: 'Descrição da estratégia é obrigatória' }),
+  description: z.string(),
 });
 
 const newStrategySchema = z.object({
@@ -18,6 +16,7 @@ const newStrategySchema = z.object({
 
 const strategySchema = z.object({
   id: z.string().uuid(),
+  active: z.boolean(),
   ...newStrategySchema.shape,
 });
 

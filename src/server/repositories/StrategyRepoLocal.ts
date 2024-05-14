@@ -11,13 +11,17 @@ export class StrategyRepoLocal implements IStrategyRepository {
   }
   async deleteStrategy(id: string): Promise<void> {
     return new Promise((resolve: () => void, reject) => {
-      this.db.run('DELETE FROM strategies WHERE id = ?', [id], (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
+      this.db.run(
+        'UPDATE strategies SET active = ? WHERE id = ? ',
+        [false, id],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
         }
-      });
+      );
     });
   }
   async getStrategies(userEmail: string): Promise<IStrategy[]> {
@@ -37,15 +41,21 @@ export class StrategyRepoLocal implements IStrategyRepository {
   }
   async createStrategy(strategy: INewStrategy): Promise<{ id: string }> {
     const id = crypto.randomUUID();
+    const strategyAsDBNeeds: IStrategy = {
+      ...strategy,
+      id,
+      active: true,
+    };
     return new Promise((resolve: (value: { id: string }) => void, reject) => {
       this.db.run(
-        'INSERT INTO strategies (id, name, direction, description, userId) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO strategies (id, name, direction, description, userId, active) VALUES (?, ?, ?, ?, ?, ?)',
         [
-          id,
-          strategy.name,
-          strategy.direction,
-          strategy.description,
-          strategy.userEmail,
+          strategyAsDBNeeds.id,
+          strategyAsDBNeeds.name,
+          strategyAsDBNeeds.direction,
+          strategyAsDBNeeds.description,
+          strategyAsDBNeeds.userEmail,
+          strategyAsDBNeeds.active,
         ],
         (err) => {
           if (err) {

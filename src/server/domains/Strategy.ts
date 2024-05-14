@@ -2,7 +2,7 @@ import { strategySchema } from '@/schemas/strategy-schemas';
 import { z } from 'zod';
 
 type StrategyType = z.infer<typeof strategySchema>;
-type NewStrategyType = Omit<StrategyType, 'id'>;
+type NewStrategyType = Omit<StrategyType, 'id' | 'active'>;
 
 export interface INewStrategy extends NewStrategyType {}
 

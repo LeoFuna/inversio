@@ -19,7 +19,7 @@ db.serialize(() => {
   );
 
   db.run(
-    'CREATE TABLE IF NOT EXISTS strategies (id TEXT UNIQUE, name TEXT, direction TEXT, description TEXT, userId TEXT)'
+    'CREATE TABLE IF NOT EXISTS strategies (id TEXT UNIQUE, name TEXT, direction TEXT, description TEXT, userId TEXT, active BOOLEAN)'
   );
 });
 console.log('Seed completed!');
