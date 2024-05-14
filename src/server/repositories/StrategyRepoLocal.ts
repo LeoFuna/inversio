@@ -27,7 +27,7 @@ export class StrategyRepoLocal implements IStrategyRepository {
   async getStrategies(userEmail: string): Promise<IStrategy[]> {
     return new Promise((resolve: (value: IStrategy[]) => void, reject) => {
       this.db.all(
-        'SELECT * FROM strategies WHERE userId = ?',
+        'SELECT * FROM strategies WHERE userId = ? AND active = 1',
         [userEmail],
         (err, rows: IStrategy[]) => {
           if (err) {
