@@ -98,7 +98,7 @@ export default function NewStrategyDialog({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) formReset();
+        formReset();
         setIsOpen(open);
       }}
     >

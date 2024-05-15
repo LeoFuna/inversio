@@ -1,36 +1,12 @@
 'use client';
 import NewStrategyDialog from '@/client/components/registers/NewStrategyDialog';
 import StrategiesTable from '@/client/components/registers/StrategiesTable';
-import StrategyFilter from '@/client/components/registers/StrategyFilter';
 import {
   useDeleteStrategy,
   useStrategies,
 } from '@/client/hooks/registers/use-strategy';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { IStrategy } from '@/server/domains/Strategy';
-import { rankItem } from '@tanstack/match-sorter-utils';
-import {
-  ColumnDef,
-  FilterFn,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
-
-// https://tanstack.com/table/latest/docs/api/features/global-filtering#filter-meta
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Compara o valor da célula com o valor do filtro
-  const itemRank = rankItem(row.getValue(columnId), value);
-  // Guarda a informaçao do itemRank
-  addMeta({
-    itemRank,
-  });
-  // Retorna se o item passou ou nao no filtro
-  return itemRank.passed;
-};
 
 const SkeletonTable = () => {
   return (
@@ -46,53 +22,12 @@ const SkeletonTable = () => {
 };
 
 export default function RegistersPage() {
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-
-  const { data, refetch, isPending } = useStrategies();
+  const { refetch, isPending } = useStrategies();
   const {
     isSuccess: deleteSuccess,
     reset: resetDelete,
     mutate: mutateDelete,
   } = useDeleteStrategy();
-
-  const columns = useMemo<ColumnDef<IStrategy, any>[]>(
-    () => [
-      {
-        header: 'Nome',
-        accessorKey: 'name',
-      },
-      {
-        header: 'Direção',
-        accessorKey: 'direction',
-        enableGlobalFilter: false,
-      },
-      {
-        header: 'Descrição',
-        accessorKey: 'description',
-      },
-      {
-        header: '',
-        accessorKey: 'actions',
-        enableGlobalFilter: false,
-      },
-    ],
-    []
-  );
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    getFilteredRowModel: getFilteredRowModel(),
-    getRowId: (row) => row.id,
-    globalFilterFn: fuzzyFilter,
-    state: {
-      pagination,
-      globalFilter,
-    },
-  });
 
   if (deleteSuccess) {
     resetDelete();
@@ -112,10 +47,7 @@ export default function RegistersPage() {
         {isPending ? (
           <SkeletonTable />
         ) : (
-          <>
-            <StrategyFilter value={globalFilter} onChange={setGlobalFilter} />
-            <StrategiesTable table={table} onDeleteStrategy={mutateDelete} />
-          </>
+          <StrategiesTable onDeleteStrategy={mutateDelete} />
         )}
       </section>
     </main>
