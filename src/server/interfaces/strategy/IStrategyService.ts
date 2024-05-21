@@ -1,7 +1,7 @@
 import { INewStrategy, IStrategy } from '@/server/domains/Strategy';
 
 type SuccessCreateStrategy = { id: IStrategy['id'] };
-type ErrorStrategy = { status: number; error: string };
+export type ErrorStrategy = { status: number; error: string };
 
 export interface IStrategyService {
   newStrategy(
