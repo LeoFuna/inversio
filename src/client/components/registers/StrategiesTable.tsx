@@ -67,7 +67,6 @@ export default function StrategiesTable({
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => {
-                if (!cell.column.columnDef.header?.length) return;
                 return (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

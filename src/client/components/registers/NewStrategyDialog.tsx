@@ -27,6 +27,8 @@ import { useForm } from 'react-hook-form';
 import ButtonWithLoading from '../core/ButtonWithLoading';
 import { Form, FormLabel } from '../core/form';
 
+type FormNewStrategy = Omit<INewStrategy, 'userEmail'>;
+
 export default function NewStrategyDialog({
   children,
   refetchStrategies,
@@ -43,17 +45,16 @@ export default function NewStrategyDialog({
     control,
     reset: formReset,
     formState: { isValid },
-  } = useForm({
+  } = useForm<FormNewStrategy>({
     defaultValues: {
       name: '',
-      direction: '',
       description: '',
     },
     resolver: zodResolver(newStrategyFormSchema),
   });
 
   const mutation = useMutation({
-    mutationFn: async (formData: Omit<INewStrategy, 'userEmail'>) => {
+    mutationFn: async (formData: FormNewStrategy) => {
       const createResponse = await fetch('/api/strategy', {
         method: 'POST',
         body: JSON.stringify(formData),
@@ -70,9 +71,7 @@ export default function NewStrategyDialog({
     },
   });
 
-  const onCreateStrategy = async (
-    formData: Omit<INewStrategy, 'userEmail'>
-  ) => {
+  const onCreateStrategy = async (formData: FormNewStrategy) => {
     mutation.mutate(formData);
   };
 

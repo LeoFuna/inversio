@@ -1,4 +1,8 @@
 import { IStrategy } from '@/server/domains/Strategy';
+import {
+  StrategyDirection,
+  StrategyDirectionLabelE,
+} from '@/server/domains/StrategyDirection';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
@@ -35,6 +39,10 @@ export default function useStrategyTable({ data }: { data: IStrategy[] }) {
         header: 'Direção',
         accessorKey: 'direction',
         enableGlobalFilter: false,
+        cell: ({ cell }) => {
+          const direction = cell.getValue() as StrategyDirection;
+          return StrategyDirectionLabelE[direction] || null;
+        },
       },
       {
         header: 'Descrição',
@@ -60,6 +68,9 @@ export default function useStrategyTable({ data }: { data: IStrategy[] }) {
     state: {
       pagination,
       globalFilter,
+      columnVisibility: {
+        actions: false,
+      },
     },
   });
 

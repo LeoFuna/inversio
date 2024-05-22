@@ -12,6 +12,7 @@ export class StrategyService implements IStrategyService {
     await this.strategyRepository.deleteStrategy(id);
     return { message: 'Success on delete!' };
   }
+
   async getStrategies(): Promise<
     IStrategy[] | { status: number; error: string }
   > {
@@ -21,14 +22,7 @@ export class StrategyService implements IStrategyService {
       session.user.email
     );
 
-    return response.map((strategy) => {
-      // TO DO: separar isso em funçao especifica
-      let displayDirection = '';
-      if (strategy.direction === 'ct') displayDirection = 'Contra Tendência';
-      if (strategy.direction === 'td') displayDirection = 'Tendência';
-      if (strategy.direction === 'neutro') displayDirection = 'Neutra';
-      return { ...strategy, direction: displayDirection };
-    });
+    return response;
   }
 
   async newStrategy(

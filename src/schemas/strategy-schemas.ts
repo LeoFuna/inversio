@@ -5,7 +5,7 @@ const newStrategyFormSchema = z.object({
     .string()
     .trim()
     .min(2, { message: 'Nome deve ter no min 2 characteres' }),
-  direction: z.string().min(1, { message: 'Direção é obrigatória' }),
+  direction: z.enum(['ct', 'td', 'neutro']),
   description: z.string(),
 });
 
