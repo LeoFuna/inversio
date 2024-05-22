@@ -25,6 +25,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ButtonWithLoading from '../core/ButtonWithLoading';
+import TextCounter from '../core/TextCounter';
 import { Form, FormLabel } from '../core/form';
 
 type FormNewStrategy = Omit<INewStrategy, 'userEmail'>;
@@ -45,6 +46,7 @@ export default function NewStrategyDialog({
     control,
     reset: formReset,
     formState: { isValid },
+    watch,
   } = useForm<FormNewStrategy>({
     defaultValues: {
       name: '',
@@ -146,13 +148,16 @@ export default function NewStrategyDialog({
           />
 
           <FormLabel htmlFor="description" className="flex items-center gap-3">
-            <h4 className="min-w-20">Descrição:</h4>
-            <Textarea
-              id="description"
-              maxLength={180}
-              placeholder="Breve descrição..."
-              {...register('description')}
-            />
+            <h4 className="min-w-20 mb-4">Descrição:</h4>
+            <div className="w-full flex flex-col items-end gap-1">
+              <Textarea
+                id="description"
+                maxLength={180}
+                placeholder="Breve descrição..."
+                {...register('description')}
+              />
+              <TextCounter text={watch('description')} textLimit={180} />
+            </div>
           </FormLabel>
           <DialogFooter>
             <ButtonWithLoading
