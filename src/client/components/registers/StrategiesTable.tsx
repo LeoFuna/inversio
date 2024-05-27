@@ -13,6 +13,7 @@ import {
 import { IStrategy } from '@/server/domains/Strategy';
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Table as ITable, flexRender } from '@tanstack/react-table';
+import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import StrategyFilter from './StrategyFilter';
 
 const TableNavigation = ({ table }: { table: ITable<IStrategy> }) => {
@@ -74,12 +75,13 @@ export default function StrategiesTable({
                 );
               })}
               <TableCell className="flex justify-end gap-x-6">
-                <Button
-                  variant="ghost"
-                  onClick={() => onDeleteStrategy(row.id)}
+                <ConfirmDeleteDialog
+                  processDelete={() => onDeleteStrategy(row.id)}
                 >
-                  <TrashIcon className="h-5 w-5 inline" />
-                </Button>
+                  <Button variant="ghost">
+                    <TrashIcon className="h-5 w-5 inline" />
+                  </Button>
+                </ConfirmDeleteDialog>
                 <Button
                   variant="ghost"
                   onClick={() => alert(`Abre ediçao de Estratégia ${row.id}`)}
