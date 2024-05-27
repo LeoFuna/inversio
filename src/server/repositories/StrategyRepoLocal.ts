@@ -9,6 +9,22 @@ export class StrategyRepoLocal implements IStrategyRepository {
   constructor() {
     this.db = db;
   }
+  async getUniqueStrategy(id: string): Promise<IStrategy> {
+    return new Promise((resolve: (value: IStrategy) => void, reject) => {
+      this.db.get(
+        'SELECT * FROM strategies WHERE id = ?',
+        [id],
+        (err, row: IStrategy) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(row);
+          }
+        }
+      );
+    });
+  }
+
   async deleteStrategy(id: string): Promise<void> {
     return new Promise((resolve: () => void, reject) => {
       this.db.run(

@@ -12,4 +12,8 @@ export interface IStrategyController {
     req: NextRequest,
     id: string
   ): Promise<NextResponse<{ message: string } | null>>;
+  getUniqueStrategy(
+    req: NextRequest,
+    id: string
+  ): Promise<NextResponse<IStrategy | { message: string } | null>>;
 }

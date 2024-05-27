@@ -15,6 +15,20 @@ const handleKnownError = (response: ErrorStrategy) => {
 
 export class StrategyController implements IStrategyController {
   constructor(private readonly strategyService: IStrategyService) {}
+  async getUniqueStrategy(
+    req: NextRequest,
+    id: string
+  ): Promise<NextResponse<IStrategy | { message: string } | null>> {
+    try {
+      const response = await this.strategyService.getUniqueStrategy(id);
+      if ('error' in response) return handleKnownError(response);
+
+      return NextResponse.json(response, { status: 200 });
+    } catch (error: any) {
+      return NextResponse.json(error.message, { status: 500 });
+    }
+  }
+
   async deleteStrategy(
     req: NextRequest,
     id: string

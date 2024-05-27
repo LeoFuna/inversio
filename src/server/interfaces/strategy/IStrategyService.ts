@@ -9,4 +9,5 @@ export interface IStrategyService {
   ): Promise<SuccessCreateStrategy | ErrorStrategy>;
   getStrategies(): Promise<IStrategy[] | ErrorStrategy>;
   deleteStrategy(id: string): Promise<{ message: string } | ErrorStrategy>;
+  getUniqueStrategy(id: IStrategy['id']): Promise<IStrategy | ErrorStrategy>;
 }

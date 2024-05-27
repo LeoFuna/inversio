@@ -1,10 +1,19 @@
 import { getSession } from '../auth/auth';
 import { INewStrategy, IStrategy } from '../domains/Strategy';
 import { IStrategyRepository } from '../interfaces/strategy/IStrategyRepository';
-import { IStrategyService } from '../interfaces/strategy/IStrategyService';
+import {
+  ErrorStrategy,
+  IStrategyService,
+} from '../interfaces/strategy/IStrategyService';
 
 export class StrategyService implements IStrategyService {
   constructor(private readonly strategyRepository: IStrategyRepository) {}
+  async getUniqueStrategy(id: string): Promise<IStrategy | ErrorStrategy> {
+    if (!id) return { status: 400, error: 'Id is required' };
+    const response = await this.strategyRepository.getUniqueStrategy(id);
+    return response;
+  }
+
   async deleteStrategy(
     id: string
   ): Promise<{ message: string } | { status: number; error: string }> {

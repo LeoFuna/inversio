@@ -13,3 +13,10 @@ export async function DELETE(
 ) {
   return strategyController.deleteStrategy(request, params.id);
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return strategyController.getUniqueStrategy(request, params.id);
+}
