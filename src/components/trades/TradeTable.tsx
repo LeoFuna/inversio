@@ -27,7 +27,7 @@ interface TradeTableProps {
   refreshTrigger?: number;
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 2;
 export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) {
   const { user } = useAuth();
   const [trades, setTrades] = useState<Trade[]>([]);
@@ -56,6 +56,7 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
         dateFrom: dateFromFilter || undefined,
         dateTo: dateToFilter || undefined,
         resultType: resultTypeFilter,
+        withoutStrategy: showPending,
       };
 
       // Get total count for pagination
@@ -76,7 +77,7 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
     } finally {
       setLoading(false);
     }
-  }, [user, currentPage, strategyFilter, dateFromFilter, dateToFilter, resultTypeFilter, ITEMS_PER_PAGE]);
+  }, [user, currentPage, strategyFilter, dateFromFilter, dateToFilter, resultTypeFilter, showPending, ITEMS_PER_PAGE]);
 
   const loadStrategies = useCallback(async () => {
     if (!user) return;
@@ -100,12 +101,6 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
   useEffect(() => {
     loadStrategies();
   }, [user, loadStrategies]);
-
-  // Apply pending filter (trades without strategies)
-  let filteredTrades = trades;
-  if (showPending) {
-    filteredTrades = trades.filter(trade => !trade.strategyId);
-  }
 
   const handleEdit = (trade: Trade) => {
     onEdit?.(trade);
@@ -224,9 +219,6 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
                   <ToggleLeft className="w-6 h-6 text-gray-400" />
                 )}
               </Button>
-              <span className="text-xs text-gray-500">
-                Mostrar somente operações que precisam de estratégia
-              </span>
             </div>
           </div>
         </div>
@@ -261,7 +253,7 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredTrades.map((trade) => (
+            {trades.map((trade) => (
               <TableRow key={trade.id}>
                 <TableCell className="font-medium">{trade.stockType}</TableCell>
                 <TableCell>{trade.date.toDate().toLocaleDateString('pt-BR')}</TableCell>
@@ -307,7 +299,7 @@ export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) 
                 </TableCell>
               </TableRow>
             ))}
-            {filteredTrades.length === 0 && !loading && (
+            {trades.length === 0 && !loading && (
               <TableRow>
                 <TableCell colSpan={10} className="text-center py-8 text-gray-500">
                   {strategyFilter || dateFromFilter || dateToFilter || resultTypeFilter !== 'all' ? 

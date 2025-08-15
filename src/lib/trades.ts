@@ -38,17 +38,13 @@ export async function createTrade(
     outTime: data.outTime,
     quantity: data.quantity,
     men: data.men,
+    strategyId: data?.strategyId || null,
     mep: data.mep,
     result: data.result,
     date: Timestamp.fromDate(new Date(data.date + 'T12:00:00')),
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   };
-
-  // Only add strategyId if it exists
-  if (data.strategyId) {
-    tradeData.strategyId = data.strategyId;
-  }
 
   const docRef = await addDoc(collection(db, COLLECTION_NAME), tradeData);
   return docRef.id;
@@ -90,13 +86,10 @@ export async function updateTrade(
   if (data.mep !== undefined) updateData.mep = data.mep;
   if (data.result !== undefined) updateData.result = data.result;
 
-  // Handle strategyId - if explicitly undefined, remove the field
-  if (data.hasOwnProperty('strategyId')) {
-    if (data.strategyId) {
-      updateData.strategyId = data.strategyId;
-    } else {
-      updateData.strategyId = deleteField();
-    }
+  if (data.strategyId) {
+    updateData.strategyId = data.strategyId;
+  } else {
+    updateData.strategyId = null;
   }
 
   // Convert date string to Timestamp if provided
@@ -295,6 +288,7 @@ export async function getTradesCount(
     dateFrom?: string;
     dateTo?: string;
     resultType?: 'all' | 'profit' | 'loss';
+    withoutStrategy?: boolean;
   } = {}
 ): Promise<number> {
   if (!userId) {
@@ -305,7 +299,8 @@ export async function getTradesCount(
     strategyId, 
     dateFrom, 
     dateTo,
-    resultType = 'all'
+    resultType = 'all',
+    withoutStrategy = false
   } = options;
 
   let q = query(
@@ -313,9 +308,13 @@ export async function getTradesCount(
     where('userId', '==', userId)
   );
 
-  // Apply strategy filter at query level
-  if (strategyId && strategyId !== 'all') {
+  // Apply strategy filter at query level  
+  if (!withoutStrategy && strategyId && strategyId !== 'all') {
     q = query(q, where('strategyId', '==', strategyId));
+  }
+
+  if (withoutStrategy) {
+    q = query(q, where('strategyId', '==', null));
   }
 
   // Apply date range filters at query level
@@ -352,6 +351,7 @@ export async function getTradesForPage(
     dateFrom?: string;
     dateTo?: string;
     resultType?: 'all' | 'profit' | 'loss';
+    withoutStrategy?: boolean;
   } = {}
 ): Promise<Trade[]> {
   if (!userId) {
@@ -364,17 +364,23 @@ export async function getTradesForPage(
     strategyId, 
     dateFrom, 
     dateTo,
-    resultType = 'all'
+    resultType = 'all',
+    withoutStrategy = false
   } = options;
 
+  // Regular query for other filters
   let q = query(
     collection(db, COLLECTION_NAME),
     where('userId', '==', userId)
   );
 
   // Apply strategy filter at query level
-  if (strategyId && strategyId !== 'all') {
+  if (!withoutStrategy && strategyId && strategyId !== 'all') {
     q = query(q, where('strategyId', '==', strategyId));
+  }
+
+  if (!strategyId && withoutStrategy) {
+    q = query(q, where('strategyId', '==', null));
   }
 
   // Apply date range filters at query level
