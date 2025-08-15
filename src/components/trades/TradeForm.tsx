@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,28 +18,28 @@ interface TradeFormProps {
   onCancel?: () => void;
 }
 
+// Default form values
+const getDefaultFormData = (): TradeFormData => ({
+  stockType: 'AÇÕES',
+  date: new Date().toISOString().split('T')[0],
+  inTime: "",
+  outTime: "",
+  quantity: 0,
+  men: 0,
+  mep: 0,
+  result: 0,
+  strategyId: undefined,
+});
+
 export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps) {
   const { user } = useAuth();
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [loadingStrategies, setLoadingStrategies] = useState(true);
-  // Default form values
-  const getDefaultFormData = (): TradeFormData => ({
-    stockType: 'AÇÕES',
-    date: new Date().toISOString().split('T')[0],
-    inTime: '14:02:30',
-    outTime: '14:02:30',
-    quantity: 2000,
-    men: 7,
-    mep: 3,
-    result: 0,
-    strategyId: undefined,
-  });
 
   const [formData, setFormData] = useState<TradeFormData>(getDefaultFormData());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  // Reset form to default values
   const resetForm = () => {
     setFormData(getDefaultFormData());
     setErrors({});
@@ -67,7 +68,6 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
   // Reset form when trade prop changes (edit or cancel)
   useEffect(() => {
     if (trade) {
-      // Editing mode - load trade data
       setFormData({
         stockType: trade.stockType,
         date: trade.date.toDate().toISOString().split('T')[0],
@@ -80,7 +80,6 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
         strategyId: trade.strategyId,
       });
     } else {
-      // Create mode or cancel - reset to defaults
       setFormData(getDefaultFormData());
     }
     setErrors({});
@@ -97,19 +96,9 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
     // Validation
     const newErrors: Record<string, string> = {};
     
-    if (!formData.stockType) {
-      newErrors.stockType = 'Ativo é obrigatório';
-    }
-    
-    if (!formData.date) {
-      newErrors.date = 'Data é obrigatória';
-    }
-    
-    // Strategy is optional - no validation needed
-
-    if (formData.quantity <= 0) {
-      newErrors.quantity = 'Quantidade deve ser maior que zero';
-    }
+    if (!formData.stockType) newErrors.stockType = 'Ativo é obrigatório';
+    if (!formData.date) newErrors.date = 'Data é obrigatória';
+    if (formData.quantity <= 0) newErrors.quantity = 'Quantidade deve ser maior que zero';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -120,15 +109,7 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
     setErrors({});
 
     try {
-      if (trade) {
-        // Update existing trade
-        await updateTrade(user.uid, trade.id, formData);
-      } else {
-        // Create new trade
-        await createTrade(user.uid, formData);
-      }
-      
-      // Reset form after successful save (both create and edit)
+      trade ? await updateTrade(user.uid, trade.id, formData) : await createTrade(user.uid, formData);
       resetForm();
       onSubmit?.();
     } catch (error) {

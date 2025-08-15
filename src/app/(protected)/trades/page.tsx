@@ -13,11 +13,6 @@ export default function TradesPage() {
     setEditingTrade(trade);
   };
 
-  const handleDelete = (tradeId: string) => {
-    // TODO: Implement delete logic
-    console.log('Delete trade:', tradeId);
-  };
-
   const handleSubmit = () => {
     setEditingTrade(null);
     // Trigger refresh of the table
@@ -42,7 +37,7 @@ export default function TradesPage() {
       />
 
       {/* Trade table */}
-      <TradeTable onEdit={handleEdit} onDelete={handleDelete} refreshTrigger={refreshTrigger} />
+      <TradeTable onEdit={handleEdit} refreshTrigger={refreshTrigger} />
     </div>
   );
 }

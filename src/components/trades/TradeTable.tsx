@@ -24,11 +24,11 @@ import {
 
 interface TradeTableProps {
   onEdit?: (trade: Trade) => void;
-  onDelete?: (tradeId: string) => void;
   refreshTrigger?: number;
 }
 
-export default function TradeTable({ onEdit, onDelete, refreshTrigger }: TradeTableProps) {
+const ITEMS_PER_PAGE = 10;
+export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) {
   const { user } = useAuth();
   const [trades, setTrades] = useState<Trade[]>([]);
   const [strategies, setStrategies] = useState<Strategy[]>([]);
@@ -43,7 +43,6 @@ export default function TradeTable({ onEdit, onDelete, refreshTrigger }: TradeTa
   const [totalPages, setTotalPages] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [tradeToDelete, setTradeToDelete] = useState<Trade | null>(null);
-  const itemsPerPage = 10;
 
   const loadTrades = useCallback(async () => {
     if (!user) return;
@@ -61,12 +60,12 @@ export default function TradeTable({ onEdit, onDelete, refreshTrigger }: TradeTa
 
       // Get total count for pagination
       const totalCount = await getTradesCount(user.uid, filterOptions);
-      setTotalPages(Math.max(1, Math.ceil(totalCount / itemsPerPage)));
+      setTotalPages(Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE)));
 
       // Get trades for current page
       const trades = await getTradesForPage(user.uid, {
         page: currentPage,
-        limitCount: itemsPerPage,
+        limitCount: ITEMS_PER_PAGE,
         ...filterOptions,
       });
 
@@ -77,7 +76,7 @@ export default function TradeTable({ onEdit, onDelete, refreshTrigger }: TradeTa
     } finally {
       setLoading(false);
     }
-  }, [user, currentPage, strategyFilter, dateFromFilter, dateToFilter, resultTypeFilter, itemsPerPage]);
+  }, [user, currentPage, strategyFilter, dateFromFilter, dateToFilter, resultTypeFilter, ITEMS_PER_PAGE]);
 
   const loadStrategies = useCallback(async () => {
     if (!user) return;
@@ -124,7 +123,6 @@ export default function TradeTable({ onEdit, onDelete, refreshTrigger }: TradeTa
       await deleteTrade(user.uid, tradeToDelete.id);
       // Refresh the current page
       await loadTrades();
-      onDelete?.(tradeToDelete.id);
       setDeleteDialogOpen(false);
       setTradeToDelete(null);
     } catch (err) {
