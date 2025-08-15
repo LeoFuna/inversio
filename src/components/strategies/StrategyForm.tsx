@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 'use client';
 
 import { useState } from 'react';
@@ -15,12 +16,18 @@ interface StrategyFormProps {
   onCancel?: () => void;
 }
 
+const initialStrategyFormData: StrategyFormData = {
+  name: '',
+  direction: 'Tendencia',
+  description: '',
+};
+
 export default function StrategyForm({ strategy, onSubmit, onCancel }: StrategyFormProps) {
   const { user } = useAuth();
   const [formData, setFormData] = useState<StrategyFormData>({
-    name: strategy?.name || '',
-    direction: strategy?.direction || 'Tendencia',
-    description: strategy?.description || '',
+    name: strategy?.name || initialStrategyFormData.name,
+    direction: strategy?.direction || initialStrategyFormData.direction,
+    description: strategy?.description || initialStrategyFormData.description,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -37,13 +44,8 @@ export default function StrategyForm({ strategy, onSubmit, onCancel }: StrategyF
     // Validation
     const newErrors: Record<string, string> = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = 'Nome é obrigatório';
-    }
-    
-    if (!formData.description.trim()) {
-      newErrors.description = 'Descrição é obrigatória';
-    }
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
+    if (!formData.description.trim()) newErrors.description = 'Descrição é obrigatória';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -54,21 +56,9 @@ export default function StrategyForm({ strategy, onSubmit, onCancel }: StrategyF
     setErrors({});
 
     try {
-      if (strategy) {
-        // Update existing strategy
-        await updateStrategy(user.uid, strategy.id, formData);
-      } else {
-        // Create new strategy
-        await createStrategy(user.uid, formData);
-        
-        // Reset form after successful creation
-        setFormData({
-          name: '',
-          direction: 'Tendencia',
-          description: '',
-        });
-      }
-      
+      strategy ? await updateStrategy(user.uid, strategy.id, formData) : await createStrategy(user.uid, formData);
+      setFormData(initialStrategyFormData);
+
       onSubmit?.();
     } catch (error) {
       console.error('Error saving strategy:', error);
