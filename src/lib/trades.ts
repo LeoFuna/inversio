@@ -13,7 +13,6 @@ import {
   startAfter,
   Timestamp,
   DocumentSnapshot,
-  deleteField,
   getCountFromServer,
 } from 'firebase/firestore';
 import { db } from './firebase';
