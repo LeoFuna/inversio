@@ -27,7 +27,7 @@ interface TradeTableProps {
   refreshTrigger?: number;
 }
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 10;
 export default function TradeTable({ onEdit, refreshTrigger }: TradeTableProps) {
   const { user } = useAuth();
   const [trades, setTrades] = useState<Trade[]>([]);
