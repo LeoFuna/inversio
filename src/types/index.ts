@@ -41,6 +41,6 @@ export interface TradeFormData {
   quantity: number;
   men: number;
   mep: number;
-  result: number;
+  result: number | string; // Allow string for intermediate input states
   date: string; // ISO date string for forms
 }

@@ -27,7 +27,7 @@ const getDefaultFormData = (): TradeFormData => ({
   quantity: 0,
   men: 0,
   mep: 0,
-  result: 0,
+  result: "",
   strategyId: undefined,
 });
 
@@ -109,7 +109,13 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
     setErrors({});
 
     try {
-      trade ? await updateTrade(user.uid, trade.id, formData) : await createTrade(user.uid, formData);
+      // Convert result to number for API
+      const dataToSave = {
+        ...formData,
+        result: typeof formData.result === 'string' ? parseFloat(formData.result) || 0 : formData.result
+      };
+      
+      trade ? await updateTrade(user.uid, trade.id, dataToSave) : await createTrade(user.uid, dataToSave);
       resetForm();
       onSubmit?.();
     } catch (error) {
@@ -291,7 +297,15 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
                 type="number"
                 step="0.01"
                 value={formData.result}
-                onChange={(e) => handleInputChange('result', parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || value === '-') {
+                    handleInputChange('result', value);
+                  } else {
+                    const numValue = parseFloat(value);
+                    handleInputChange('result', isNaN(numValue) ? 0 : numValue);
+                  }
+                }}
                 placeholder="0.00"
                 className={errors.result ? 'border-red-500' : ''}
               />
