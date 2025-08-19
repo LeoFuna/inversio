@@ -99,6 +99,8 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
     if (!formData.stockType) newErrors.stockType = 'Ativo é obrigatório';
     if (!formData.date) newErrors.date = 'Data é obrigatória';
     if (formData.quantity <= 0) newErrors.quantity = 'Quantidade deve ser maior que zero';
+    if (!formData.inTime) newErrors.inTime = 'Hora de entrada é obrigatória';
+    if (!formData.outTime) newErrors.outTime = 'Hora de saída é obrigatória';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -208,6 +210,9 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
                 value={formData.inTime}
                 onChange={(e) => handleInputChange('inTime', e.target.value)}
               />
+              {errors.inTime && (
+                <p className="text-sm text-red-600">{errors.inTime}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -219,6 +224,9 @@ export default function TradeForm({ trade, onSubmit, onCancel }: TradeFormProps)
                 value={formData.outTime}
                 onChange={(e) => handleInputChange('outTime', e.target.value)}
               />
+              {errors.outTime && (
+                <p className="text-sm text-red-600">{errors.outTime}</p>
+              )}
             </div>
           </div>
 
